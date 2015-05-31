@@ -15,7 +15,7 @@ from sys import platform as _platform
 import subprocess
 
 secondSearch=True
-secondSearchPath='~'
+secondSearchPath='/home/lz'
 Ktimeout=3
 out=''
 error='time out'
@@ -32,7 +32,7 @@ def find(pwd, args, timeout):
     if _platform.find('linux') == 0 or _platform == 'darwin':
         name = '*%s*'%(args[0])
         others = args[1:]
-        inputs = 'find . -type f -name "%s" '%(name)
+        inputs = 'find -O3 .  -type f -name "%s" '%(name)
         for ignore in ['*.pyc','*.swp','*.class']:
             inputs += '-and -not -name "%s"'%(ignore)
         for other in others:
@@ -54,9 +54,7 @@ def find(pwd, args, timeout):
                 pass
         if not len(out) and secondSearch:
             print "second search"
-            inputs = 'find '+secondSearchPath+' -type f -name "%s" '%(name)
-            for ignore in ['*.pyc','*.swp','*.class']:
-                inputs += '-and -not -name "%s"'%(ignore)
+            inputs = 'locate -e  --regex \''+secondSearchPath+'/.*%s[^/]*$\'   '%(args[0])
             for other in others:
                 inputs += '|grep %s'%(other)
             thread = threading.Thread(target=_target)

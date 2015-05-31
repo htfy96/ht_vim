@@ -77,7 +77,7 @@ highlight cPreProc guifg=#ca121a gui=BOLD
 highlight link Keyword Statement
 highlight link Label Statement
 highlight Macro guifg=#ae2fae gui=bold
-highlight Number guifg=#546cff gui=NONE
+highlight Number guifg=#647eff gui=NONE
 highlight link Operator Statement
 highlight PreCondit guifg=#ac8dc6 gui=bold
 highlight PreProc guifg=#ae2fae gui=bold
