@@ -78,7 +78,7 @@ function! SingleCompile#templates#cpp#Initialize()
         call SingleCompile#SetOutfile('cpp', 'bcc', g:SingleCompile_common_out_file)
     endif
     call SingleCompile#SetCompilerTemplate('cpp', 'g++',
-                \'GNU C++ Compiler', 'g++', '-g -std=c++11 -o $(FILE_TITLE)$',
+                \'GNU C++ Compiler', 'g++', '-g -std=c++11 -Wno-unevaluated-expression -o $(FILE_TITLE)$',
                 \g:SingleCompile_common_run_command)
     call SingleCompile#SetCompilerTemplateByDict('cpp', 'g++', {
                 \ 'pre-do'  : function('SingleCompile#PredoGcc'),
@@ -106,7 +106,7 @@ function! SingleCompile#templates#cpp#Initialize()
 
     call SingleCompile#SetCompilerTemplate('cpp', 'clang',
                 \ 'the Clang C and Objective-C compiler',
-                \'clang++', ' -std=c++11 -g  -o $(FILE_TITLE)$   -lm ', g:SingleCompile_common_run_command)
+                \'clang++', ' -std=c++11 -g -Wno-unevaluated-expression  -o $(FILE_TITLE)$   -lm ', g:SingleCompile_common_run_command)
     call SingleCompile#SetCompilerTemplateByDict('cpp', 'clang', {
                 \ 'pre-do'  : function('SingleCompile#PredoClang'),
                 \ 'out-file': g:SingleCompile_common_out_file,

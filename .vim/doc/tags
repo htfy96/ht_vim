@@ -560,6 +560,13 @@ g:ycm_server_use_vim_stdout	youcompleteme.txt	/*g:ycm_server_use_vim_stdout*
 g:ycm_show_diagnostics_ui	youcompleteme.txt	/*g:ycm_show_diagnostics_ui*
 g:ycm_use_ultisnips_completer	youcompleteme.txt	/*g:ycm_use_ultisnips_completer*
 g:ycm_warning_symbol	youcompleteme.txt	/*g:ycm_warning_symbol*
+hier	hier.txt	/*hier*
+hier-changelog	hier.txt	/*hier-changelog*
+hier-customization	hier.txt	/*hier-customization*
+hier-description	hier.txt	/*hier-description*
+hier-installation	hier.txt	/*hier-installation*
+hier-usage	hier.txt	/*hier-usage*
+hier.txt	hier.txt	/*hier.txt*
 import-vim	youcompleteme.txt	/*import-vim*
 libpython	youcompleteme.txt	/*libpython*
 libpython2.7.a-...-relocation-R_X86_64_32	youcompleteme.txt	/*libpython2.7.a-...-relocation-R_X86_64_32*

@@ -24,11 +24,22 @@ let g:ycm_confirm_extra_conf = 0
 let g:ycm_key_invoke_completion = '<M-z>'
 let g:tagbar_compact = 1
 let g:tagbar_width = 30
-let g:tagbar_expand = 1
+let g:ackhighlight = 1
 
+let g:ack_use_dispatch = 1
+let g:visualHtml#clcb#geometry = "1400x1000+1944+4"
+let g:tagbar_expand = 1
+let g:eighties_enabled = 1
+let g:eighties_minimum_width = 20
+let g:eighties_extra_width = 2 " Increase this if you want some extra room
+let g:eighties_compute = 1 " Disable this if you just want the minimum + extra
+" Only do this part when compiled with support for autocommands.
+if has("autocmd")
+autocmd Filetype java setlocal omnifunc=javacomplete#Complete
+autocmd Filetype java setlocal completefunc=javacomplete#CompleteParamsInfo
+endif
 syntax on            " 语法高亮
 
-colorscheme PerfectDark        " elflord ron peachpuff default 设置配色方案，vim自带的配色方案保存在/usr/share/vim/vim72/colors目录下
 set cursorline
 set lines=38 columns=120
 
@@ -44,9 +55,9 @@ set background=dark
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
 if has("autocmd")
-	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-	"have Vim load indentation rules and plugins according to the detected filetype
-	filetype plugin indent on
+    au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+    "have Vim load indentation rules and plugins according to the detected filetype
+    filetype plugin indent on
 endif
 " The following are commented out as they cause vim to behave a lot
 " differently from regular Vi. They are highly recommended though.
@@ -91,20 +102,24 @@ let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBufs = 1
 let g:miniBufExplModSelTarget = 1
+let g:vjde_completion_key='<c-x><c-o>'
+if has("autocmd")
+    autocmd Filetype java setlocal omnifunc=javacomplete#Complete
+endif 
 function! SetupPython()
-	" Here, you can have the final say on what is set.  So
-	" fixup any settings you don't like.
-	set et
-	set tabstop=3
-	set shiftwidth=4
-	set softtabstop=4
+    " Here, you can have the final say on what is set.  So
+    " fixup any settings you don't like.
+    set et
+    set tabstop=3
+    set shiftwidth=4
+    set softtabstop=4
 endfunction
 command! -bar SetupPython call SetupPython()
 let g:airline#extensions#tabline#enabled = 1
 
 let g:airline_powerline_fonts=1
 if !exists('g:airline_symbols')
-	let g:airline_symbols = {}
+    let g:airline_symbols = {}
 endif
 
 let g:airline_left_sep = '»'
@@ -128,7 +143,8 @@ let g:airline_right_alt_sep= ''
 let g:airline_symbols.branch= ''
 let g:airline_symbols.readonly= ''
 let g:airline_symbols.linenr= ''
-
+noremap <F11> :GtagsCursor<cr>
+inoremap <F11> <esc>:GtagsCursor<cr>
 
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:NERDTreeMouseMode = 1
@@ -136,8 +152,18 @@ let g:NERDTreeMouseMode = 1
 let NERDTreeWinSize = 25
 let NERDTreeMinimalUI = 1
 let g:SuperTabDefaultCompletionType = "<M-z>"
+let g:SingleCompile_showquickfixiferror = 1
 set tags+="/home/lz/桌面/linux-3.17.2/tags"
+let g:SingleCompile_silentcompileifshowquickfix = 1
+if executable('ag')
+    let g:ackprg = 'ag --vimgrep'
+endif
+let g:tex_flavor='latex'
 let g:vimshell_popup_command="30vsplit"
+call SingleCompile#ChooseCompiler('cpp','clang')
+
+call SingleCompile#ChooseCompiler('c','clang')
+
 noremap <F8> :Tagbar<CR>
 inoremap <F8> <ESC>:Tagbar<CR>
 
@@ -149,29 +175,29 @@ set clipboard=unnamedplus
 "  < 判断操作系统是否是 Windows 还是 Linux >
 "------------------------------------------------------------------------------
 if(has("win32") || has("win64") || has("win95") || has("win16"))
-	let g:iswindows = 1
+    let g:iswindows = 1
 else
-	let g:iswindows = 0
+    let g:iswindows = 0
 endif
 
 "------------------------------------------------------------------------------
 "  < 判断是终端还是 Gvim >
 "------------------------------------------------------------------------------
 if has("gui_running")
-	let g:isGUI = 1
+    let g:isGUI = 1
+    colorscheme PerfectDark        " elflord ron peachpuff default 设置配色方案，vim自带的配色方案保存在/usr/share/vim/vim72/colors目录下
 else
-	let g:SuperTabDefaultCompletionType = "<M-z>"
+    let g:SuperTabDefaultCompletionType = "<M-z>"
+    colorscheme industry
 
 
-	let g:isGUI = 0
+    let g:isGUI = 0
 endif
 
 "------------------------------------------------------------------------------
 "  < 编译、连接、运行配置 >
 "------------------------------------------------------------------------------
 " F9 一键保存、编译、连接存并运行
-noremap <F9>:call Run()<CR>
-inoremap <F9>:call Run()<CR>
 
 
 map <F4> :call WRun() <CR>"<c-x><c-u>"
@@ -188,13 +214,15 @@ imap <F5> :call DRun() <CR>
 map <F3> :call Pysh2() <CR>
 imap <F3> :call Pysh2() <CR>
 " Ctrl + F9 一键保存并编译
-map <c-F9> :call Compile()<CR>
-imap <c-F9> <ESC>:call Compile()<CR>
+map <F9> :SCCompile<CR>
+imap <F9> <ESC>:SCCompile<CR>
+map <F10> :SCCompileRun<CR>
+imap <F10> <ESC>:SCCompileRun<CR>
 
 " Ctrl + F10 一键保存并连接"<c-x><c-u>"
 
-map <c-F10> :call Link()<CR>
-imap <c-F10> <ESC>:call Link()<CR>
+map <c-F10> :SCCompile<CR>
+imap <c-F10> <ESC>:SCCompile<CR>
 
 map <c-F11> :call Quickmake()<CR>
 imap <c-F11> <ESC>:call Quickmake()<CR>
@@ -245,209 +273,141 @@ set tags+=~/.vim/tag/boost.cpp.tags
 " " -- configs --
 let OmniCpp_MayCompleteDot = 1 " autocomplete with .
 let OmniCpp_MayCompleteArrow = 1 " autocomplete with ->
+let g:ycm_filetype_whitelist= {'cpp':1,'c':1,'python':1,'python3':1,'csharp':1}
+let g:acp_enableAtStartup = 0
+" Use neocomplete.
+let g:neocomplete#enable_at_startup = 1
+" Use smartcase.
+let g:neocomplete#enable_smart_case = 1
+" Set minimum syntax keyword length.
+let g:neocomplete#sources#syntax#min_keyword_length = 4
+let g:neocomplete#lock_buffer_name_pattern = '\*ku\*'
+let g:neocomplete#enable_auto_close_preview=1
+let g:neocomplete#enable_fuzzy_completion=0
+" Define dictionary.
+
+let g:neocomplete#sources#dictionary#dictionaries = {
+            \ 'default' : '',
+            \ 'vimshell' : $HOME.'/.vimshell_hist',
+            \ 'scheme' : $HOME.'/.gosh_completions'
+            \ }
+
+" Define keyword.
+if !exists('g:neocomplete#keyword_patterns')
+    let g:neocomplete#keyword_patterns = {}
+endif
+let g:neocomplete#keyword_patterns['default'] = '\h\w*'
+
+" Plugin key-mappings.
+inoremap <expr><C-g>     neocomplete#undo_completion()
+inoremap <expr><C-l>     neocomplete#complete_common_string()
+let g:neocomplete#enable_insert_char_pre=1
+" Recommended key-mappings.
+" <CR>: close popup and save indent.
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
+
+autocmd FileType cpp,c,python3,python,csharp NeoCompleteLock
+" Enable heavy omni completion.
+if !exists('g:neocomplete#sources#omni#input_patterns')
+    let g:neocomplete#sources#omni#input_patterns = {}
+endif
+
+let g:neocomplete#sources#omni#input_patterns.php = '[^. \t]->\h\w*\|\h\w*::'
+let g:neocomplete#sources#omni#input_patterns.c = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.javascript = '[^.[:digit:] *\t]\%(\.\|->\)'
+let g:neocomplete#sources#omni#input_patterns.cpp = '[^.[:digit:] *\t]\%(\.\|->\)\|\h\w*::'
+" Plugin key-mappings.
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: pumvisible() ? "\<C-n>" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)"
+\: "\<TAB>"
+
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+" For perlomni.vim setting.
+" https://github.com/c9s/perlomni.vim
+let g:neocomplete#sources#omni#input_patterns.perl = '\h\w*->\h\w*\|\h\w*::'
+
+function! s:my_cr_function()
+    "return neocomplete#close_popup() . "\<CR>"
+    " For no inserting <CR> key.
+    return pumvisible() ? neocomplete#close_popup() : "\<CR>"
+endfunction
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" <C-h>, <BS>: close popup and delete backword char.
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><C-y>  neocomplete#close_popup()
+inoremap <expr><C-e>  neocomplete#cancel_popup()
+
+inoremap <F6> <ESC>ggyG
+noremap <f6> ggyG
+call neocomplete#smart_close_popup()
+
+let g:EasyMotion_keys='asdfghjklqwertyiopzxcvbnm'
+let g:EasyMotion_smartcase = 1
+let g:vxlib_user_generated_plugins=1
+let g:minimap_highlight='Visual'
 let OmniCpp_MayCompleteScope = 1 " autocomplete with ::
 let OmniCpp_SelectFirstItem = 2 " select first item (but don't insert)
 let OmniCpp_NamespaceSearch = 2 " search namespaces in this and included
 " files
 let OmniCpp_ShowPrototypeInAbbr = 1 " show function prototype (i.e.
 " parameters) in popup window
-
-let s:LastShellReturn_C = 0
-let s:LastShellReturn_L = 0
-let s:ShowWarning = 1
-let s:Obj_Extension = '.o'
-let s:Exe_Extension = '.exe'
-let s:Sou_Error = 0
-
-let s:windows_CFlags = 'gcc\ -fexec-charset=gbk\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'
-let s:linux_CFlags = 'clang\ -c\ -std=c++11\ -w\ -g\ -c\ %:p\ -o\ %:p:r.o'
-
-let s:windows_CPPFlags = 'g++\ -fexec-charset=gbk\ -Wall\ -g\ -O0\ -c\ %\ -o\ %<.o'
-let s:linux_CPPFlags = 'clang++\ -std=c++11\ -w\ -c\ -Lboost\ -g\ %\ -pthread\ -o\ %:p:r.o'
-
 func! WRun()
-	w
-	cd %:p:h
-	exe ":silent !gnome-terminal -x bash -c '%:p:r;read'"
+    w
+    cd %:p:h
+    exe ":silent !gnome-terminal -x bash -c '%:p:r;read'"
 endfunc
 func! WRunDebug()
-	w
-	cd %:p:h
-	exe ":silent !gnome-terminal -x bash -c 'gdb %:p:r;read'"
+    w
+    cd %:p:h
+    exe ":silent !gnome-terminal -x bash -c 'gdb %:p:r;read'"
 endfunc
 
 func! DRun()
-	w
-	exe  ":ConqueTermVSplit ".expand("%:p:r")
+    w
+    exe  ":ConqueTermVSplit ".expand("%:p:r")
 
 endfunc
 
 func! Pysh2()
-	let g:ConqueTerm_PyVersion = 3
-	exe ":VimShellPop"
+    let g:ConqueTerm_PyVersion = 3
+    exe ":VimShellPop"
 
 endfunc
 
 func! Quickmake()
-	exe ":setlocal makeprg=make"
-	echohl WarningMsg | echo "Making..."
-	silent make
-	redraw!
-	exe ":bo cw"
+    exe ":setlocal makeprg=make"
+    echohl WarningMsg | echo "Making..."
+    silent make
+    redraw!
+    exe ":bo cw"
 endfunc
-
-func! Compile()
-	exe ":ccl"
-	exe ":update"
-	if expand("%:e") == "c" || expand("%:e") == "cpp" || expand("%:e") == "cxx"
-		let s:Sou_Error = 0
-		let s:LastShellReturn_C = 0
-		let Sou = expand("%:p")
-		let Obj = expand("%:p:r").s:Obj_Extension
-		let Obj_Name = expand("%:p:t:r").s:Obj_Extension
-		let v:statusmsg = ''
-		if !filereadable(Obj) || (filereadable(Obj) && (getftime(Obj) < getftime(Sou)))
-			redraw!
-			if expand("%:e") == "c"
-				if g:iswindows
-					exe ":setlocal makeprg=".s:windows_CFlags
-				else
-					exe ":setlocal makeprg=".s:linux_CFlags
-				endif
-				echohl WarningMsg | echo " compiling..."
-				silent make
-			elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"
-				if g:iswindows
-					exe ":setlocal makeprg=".s:windows_CPPFlags
-				else
-					exe ":setlocal makeprg=".s:linux_CPPFlags
-				endif
-				echohl WarningMsg | echo " compiling..."
-				silent make
-			endif
-			redraw!
-			if v:shell_error != 0
-				let s:LastShellReturn_C = v:shell_error
-			endif
-			if g:iswindows
-				if s:LastShellReturn_C != 0
-					exe ":bo cope"
-					echohl WarningMsg | echo " compilation failed"
-				else
-					if s:ShowWarning
-						exe ":bo cw"
-					endif
-					echohl WarningMsg | echo " compilation successful"
-				endif
-			else
-				if empty(v:statusmsg)
-					echohl WarningMsg | echo " compilation successful"
-				else
-					exe ":bo cope"
-				endif
-			endif
-		else
-			echohl WarningMsg | echo ""Obj_Name"is up to date"
-		endif
-	else
-		let s:Sou_Error = 1
-		echohl WarningMsg | echo " please choose the correct source file"
-	endif
-	exe ":setlocal makeprg=make"
-endfunc
-
-func! Link()
-	call Compile()
-	if s:Sou_Error || s:LastShellReturn_C != 0
-		return
-	endif
-	let s:LastShellReturn_L = 0
-	let Sou = expand("%:p")
-	let Obj = expand("%:p:r").s:Obj_Extension
-	if g:iswindows
-		let Exe = expand("%:p:r").s:Exe_Extension
-		let Exe_Name = expand("%:p:t:r").s:Exe_Extension
-	else
-		let Exe = expand("%:p:r")
-		let Exe_Name = expand("%:p:t:r")
-	endif
-	let v:statusmsg = ''
-	if filereadable(Obj) && (getftime(Obj) >= getftime(Sou))
-		redraw!
-		if !executable(Exe) || (executable(Exe) && getftime(Exe) < getftime(Obj))
-			if expand("%:e") == "c"
-				setlocal makeprg=gcc\ -o\ %<\ %<.o
-				echohl WarningMsg | echo " linking..."
-				silent make
-			elseif expand("%:e") == "cpp" || expand("%:e") == "cxx"
-				setlocal makeprg=clang++\ -o\ %:p:r\ %:p:r.o\ --std=c++11\ -pthread\ -Lboost\ -lboost_system\ -lboost_filesystem
-				echohl WarningMsg | echo " linking..."
-				silent make
-			endif
-			redraw!
-			if v:shell_error != 0
-				let s:LastShellReturn_L = v:shell_error
-			endif
-			if g:iswindows
-				if s:LastShellReturn_L != 0
-					exe ":bo cope"
-					echohl WarningMsg | echo " linking failed"
-				else
-					if s:ShowWarning
-						exe ":bo cw"
-					endif
-					echohl WarningMsg | echo " linking successful"
-				endif
-			else
-				if empty(v:statusmsg)
-					echohl WarningMsg | echo " linking successful"
-				else
-					exe ":bo cope"
-				endif
-			endif
-		else
-			echohl WarningMsg | echo ""Exe_Name"is up to date"
-		endif
-	endif
-	setlocal makeprg=make
-endfunc
-
-func! Run()
-	let s:ShowWarning = 0
-	call Link()
-	let s:ShowWarning = 1
-	if s:Sou_Error || s:LastShellReturn_C != 0 || s:LastShellReturn_L != 0
-		return
-	endif
-	let Sou = expand("%:p")
-	let Obj = expand("%:p:r").s:Obj_Extension
-
-	if g:iswindows
-		let Exe = expand("%:p:r").s:Exe_Extension
-	else
-		let Exe = expand("%:p:r")
-	endif
-	if executable(Exe) && getftime(Exe) >= getftime(Obj) && getftime(Obj) >= getftime(Sou)
-		redraw!
-		echohl WarningMsg | echo " running..."
-		if g:iswindows
-			exe ":!%<.exe"
-		else
-			if g:isGUI
-				exe ":!gnome-terminal -x bash -c './%<;read'" 
-			else
-				exe ":!./%<"
-			endif
-		endif
-		redraw!
-		echohl WarningMsg | echo " running finish"
-	endif
-endfunc
-set guioptions=Pra
+set guioptions=ra
 set showtabline=0
 
 augroup filetypedetect 
-	au BufNewFile,BufRead *.def,*.cns,*.st setf mugen
+    au BufNewFile,BufRead *.def,*.cns,*.st setf mugen
 augroup END
-au   BufEnter *   execute ":lcd " . expand("%:p:h") 
+au   BufEnter *   execute ":lcd %:p:h" 
+au VimEnter * silent !xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+autocmd FileType java set omnifunc=javacomplete#Complete
+let g:easytags_async=1
+let g:Gtags_Auto_Update = 1
 
